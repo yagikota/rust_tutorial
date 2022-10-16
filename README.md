@@ -25,14 +25,17 @@ cargo 1.64.0 (387270bc7 2022-09-16)
 ## Memo
 * debug setting for vscode
     * https://stackoverflow.com/questions/70723735/cannot-debug-rust-in-visual-studio-code
-    
-
 
 ## Reference
 * doc
     * https://www.rust-lang.org/
 * how to install
     * https://doc.rust-lang.org/book/ch01-01-installation.html
+* Library
+    * rayon
+        * https://github.com/rayon-rs/rayon
+    * structopt
+        * https://github.com/TeXitoi/structopt
 * Zenn
     * https://zenn.dev/mebiusbox/books/22d4c1ed9b0003/viewer/6d5875
 
