@@ -1,43 +1,40 @@
-use std::env::args;
-use std::fs::read_to_string;
+use std::{fs::read_to_string, ptr::read};
+use structopt::StructOpt;
 
+#[derive(StructOpt)]
+#[structopt(name = "rsgrep")]
 struct GrepArgs {
-    path: String,
+    #[structopt(name = "PATTERN")]
     pattern: String,
+    #[structopt(name = "FILE")]
+    path: Vec<String>,
 }
 
-impl GrepArgs {
-    fn new(path: String, pattern: String) -> GrepArgs {
-        GrepArgs { path, pattern }
-    }
-
-    fn print_pattern(self, user: String) {
-        let pat = self.pattern;
-        println!("from: {}. pattern: {}", user, pat);
-    }
-}
-
-fn grep(pattern: String, content: String) {
+fn grep(state: &GrepArgs, content: String, file_name: &str) {
     for line in content.lines() {
-        if line.contains(pattern.as_str()) {
-            println!("{}", line);
+        if line.contains(state.pattern.as_str()) {
+            println!("{}: {}", file_name, line);
         }
     }
 }
 
 fn run(state: GrepArgs) {
-    match read_to_string(state.path) {
-        Ok(content) => grep(state.pattern, content),
-        Err(reason) => println!("{}", reason),
-    }
+    state
+        .path
+        .iter()
+        .for_each(|file| match read_to_string(file) {
+            Ok(content) => grep(&state, content, file),
+            Err(reason) => println!("{}", reason),
+        });
+
+    // for file in state.path.iter() {
+    //     match read_to_string(file) {
+    //         Ok(content) => grep(&state, content, file),
+    //         Err(reason) => println!("{}", reason),
+    //     }
+    // }
 }
 
 fn main() {
-    let pattern = args().nth(1);
-    let path = args().nth(2);
-
-    match (pattern, path) {
-        (Some(pattern), Some(path)) => run(GrepArgs::new(path, pattern)),
-        _ => println!("pattern or path is not specified!"),
-    }
+    run(GrepArgs::from_args());
 }
